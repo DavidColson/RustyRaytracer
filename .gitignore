@@ -1,0 +1,4 @@
+/.vscode
+raytracer.code-workspace
+/target
+**/*.rs.bk
