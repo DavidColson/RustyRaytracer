@@ -1,3 +1,4 @@
+use std::sync::Arc;
 
 use drawable::Drawable;
 use drawable::HitResult;
@@ -8,12 +9,12 @@ use scatterer::Scatterer;
 
 pub struct World {
     objects: Vec<Box<dyn Drawable>>,
-    background_mat: Box<dyn Scatterer>,
+    background_mat: Arc<dyn Scatterer>,
 }
 
 impl World {
     pub fn new(objects: Vec<Box<dyn Drawable>>) -> World {
-        World{objects, background_mat: Box::new(NullMaterial::new())}
+        World{objects, background_mat: Arc::new(NullMaterial::new())}
     }
 }
 
@@ -23,7 +24,7 @@ impl Drawable for World {
             t: 0.0,
             p: Vec3::new(0.0, 0.0, 0.0),
             normal: Vec3::new(0.0, 0.0, 0.0),
-            material: &self.background_mat,
+            material: Arc::clone(&self.background_mat),
             };
         let mut hit_anything = false;
         let mut closest_so_far = t_max;

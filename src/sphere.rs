@@ -1,3 +1,4 @@
+use std::sync::Arc;
 use std::option::Option;
 
 use drawable::Drawable;
@@ -9,11 +10,11 @@ use scatterer::Scatterer;
 pub struct Sphere {
     center: Vec3,
     radius: f64,
-    material: Box<dyn Scatterer>,
+    material: Arc<dyn Scatterer>,
 }
 
 impl Sphere {
-    pub fn new(center: Vec3, radius: f64, material: Box<dyn Scatterer>) -> Sphere {
+    pub fn new(center: Vec3, radius: f64, material: Arc<dyn Scatterer>) -> Sphere {
         Sphere{center, radius, material}
     }
 }
@@ -31,13 +32,13 @@ impl Drawable for Sphere {
             if temp < t_max && temp > t_min {
                 let p = ray.point_at_parameter(temp);
                 let norm = (p - self.center) / self.radius;
-                return Some(HitResult{t: temp, p: p, normal: norm, material: &self.material})
+                return Some(HitResult{t: temp, p: p, normal: norm, material: Arc::clone(&self.material)})
             }
             let temp = (-b + disc_sqrt) / a;
             if temp < t_max && temp > t_min {
                 let p = ray.point_at_parameter(temp);
                 let norm = (p - self.center) / self.radius;
-                return Some(HitResult{t: temp, p: p, normal: norm, material: &self.material})
+                return Some(HitResult{t: temp, p: p, normal: norm, material: Arc::clone(&self.material)})
             }
         }
         None
